@@ -56,4 +56,67 @@
             return (string.Empty, 0);
         }
     }
+
+    internal class SolutionPart2
+    {
+        private static readonly string[] colors = ["red", "green", "blue"];
+
+        public static string Solve()
+        {
+            string[] lines = File.ReadLines(@"Day02/input.txt").ToArray();
+            int sum = 0;
+            for (int index = 0; index < lines.Length; index++)
+            {
+                string line = lines[index];
+                int power = CountPowerOfHighestValues(line);
+                sum += power;
+            }
+            return sum.ToString();
+        }
+
+        public static int CountPowerOfHighestValues(string line)
+        {
+            line = line.Split(':').Last();
+            line = line.Replace(" ", string.Empty);
+            string[] inputs = line.Split(';');
+            Dictionary<string, int> highestValues = new();
+            foreach (string color in colors)
+                highestValues.Add(color, 0);
+
+            foreach (string input in inputs)
+            {
+                string[] cubes = input.Split(",");
+                foreach (string cube in cubes)
+                {
+                    (string color, int amount) = ParseColorAmountPair(cube);
+                    if (amount > highestValues[color])
+                        highestValues[color] = amount;
+                }
+            }
+
+            int result = 0;
+            foreach(int value in highestValues.Values)
+            {
+                if (result == 0)
+                    result = value;
+                else
+                    result *= value;
+            }
+            return result;
+        }
+
+        public static (string, int) ParseColorAmountPair(string line)
+        {
+            foreach (string color in colors)
+            {
+                if (line.Contains(color))
+                {
+                    string amount = line.Replace(color, string.Empty);
+                    return (color, int.Parse(amount));
+                }
+            }
+
+            return (string.Empty, 0);
+        }
+    }
 }
