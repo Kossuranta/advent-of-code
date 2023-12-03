@@ -2,16 +2,21 @@
 
 namespace AdventOfCode2023.Day03
 {
-    internal class SolutionPart1
+    internal class Solution
     {
+        private static readonly Dictionary<string, List<int>> gears = new();
+
         public static string Solve()
         {
             string[] lines = File.ReadLines(@"Day03/input.txt").ToArray();
-            int sum = 0;
+            int p1 = 0;
             for (int i = 0; i < lines.Length; i++)
-                sum += CountLineSum(lines, i);
+                p1 += CountLineSum(lines, i);
 
-            return sum.ToString();
+            int p2 = CountGearSum();
+
+            string result = $"Part 1: {p1} | Part 2: {p2}";
+            return result;
         }
 
         public static int CountLineSum(string[] lines, int lineIndex)
@@ -20,34 +25,55 @@ namespace AdventOfCode2023.Day03
             string valueStr = "";
             bool isValidValue = false;
             string line = lines[lineIndex];
+            string gearID = "";
             for (int charIndex = 0; charIndex < line.Length; charIndex++)
             {
                 char c = line[charIndex];
                 if (!char.IsDigit(c))
                 {
-                    if (isValidValue && !string.IsNullOrEmpty(valueStr))
-                        result += int.Parse(valueStr);
+                    TryAddResult();
 
                     isValidValue = false;
                     valueStr = "";
+                    gearID = "";
                     continue;
                 }
 
                 valueStr += c;
 
                 if (!isValidValue)
-                    isValidValue = IsValidValue(lines, lineIndex, charIndex);
+                {
+                    isValidValue = IsValidValue(lines, lineIndex, charIndex, out string symbolID);
+                    if (!string.IsNullOrEmpty(symbolID))
+                        gearID = symbolID;
+                }
             }
 
-            if (isValidValue && !string.IsNullOrEmpty(valueStr))
-                result += int.Parse(valueStr);
+            TryAddResult();
 
             return result;
+
+            void TryAddResult()
+            {
+                if (!isValidValue || string.IsNullOrEmpty(valueStr))
+                    return;
+
+                int value = int.Parse(valueStr);
+                result += value;
+                if (!string.IsNullOrEmpty(gearID))
+                {
+                    if (!gears.ContainsKey(gearID))
+                        gears.Add(gearID, new List<int>(2));
+                    gears[gearID].Add(value);
+                }
+            }
         }
 
-        public static bool IsValidValue(string[] lines, int lineIndex, int charIndex)
+        public static bool IsValidValue(string[] lines, int lineIndex, int charIndex, out string symbolID)
         {
-            for(int li = lineIndex - 1; li < lineIndex + 2; li++)
+            symbolID = "";
+            bool symbolFound = false;
+            for (int li = lineIndex - 1; li < lineIndex + 2; li++)
             {
                 if (li < 0 || li >= lines.Length)
                     continue;
@@ -61,11 +87,30 @@ namespace AdventOfCode2023.Day03
                     char c = line[ci];
 
                     if (!char.IsDigit(c) && c != '.')
-                        return true;
+                    {
+                        if (c == '*')
+                            symbolID = $"L{li}C{ci}";
+                        
+                        symbolFound = true;
+                    }
                 }
             }
 
-            return false;
+            return symbolFound;
+        }
+
+        public static int CountGearSum()
+        {
+            int sum = 0;
+            foreach((string _, List<int> values) in gears)
+            {
+                if (values.Count != 2)
+                    continue;
+
+                sum += values[0] * values[1];
+            }
+
+            return sum;
         }
     }
 }
