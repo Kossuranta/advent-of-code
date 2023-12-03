@@ -4,13 +4,13 @@ namespace AdventOfCode2023.Day01
 {
     internal class SolutionPart1
     {
-        public static void Solve()
+        public static string Solve()
         {
             int sum = 0;
-            foreach(string line in File.ReadLines(@"C:/input.txt"))
+            foreach(string line in File.ReadLines(@"Day01/input.txt"))
                 sum += GetDigits(line);
-            
-            Console.WriteLine(sum);
+
+            return sum.ToString();
         }
 
         private static int GetDigits(string line)
@@ -47,13 +47,13 @@ namespace AdventOfCode2023.Day01
             ("nine", 9),
         ];
 
-        public static void Solve()
+        public static string Solve()
         {
             int sum = 0;
-            foreach (string line in File.ReadLines(@"C:/input.txt"))
+            foreach (string line in File.ReadLines(@"Day01/input.txt"))
                 sum += GetDigits(line);
 
-            Console.WriteLine(sum);
+            return sum.ToString();
         }
 
         private static int GetDigits(string line)
