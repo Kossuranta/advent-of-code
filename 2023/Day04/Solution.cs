@@ -2,11 +2,12 @@
 {
     internal class Solution
     {
-        private readonly struct Card
+        private class Card
         {
             public readonly int id;
             public readonly int[] winning;
             public readonly int[] numbers;
+            public int count = 1;
 
             public Card(int id, int[] winning, int[] numbers)
             {
@@ -23,7 +24,8 @@
             string[] lines = File.ReadLines(@"Day04/input.txt").ToArray();
             ParseCards(lines);
             int p1 = CountPoints();
-            string result = $"Part 1: {p1}";
+            int p2 = CountCards();
+            string result = $"Part 1: {p1} | Part 2: {p2}";
             return result;
         }
 
@@ -57,13 +59,24 @@
         private static int CountPoints()
         {
             int total = 0;
-            foreach (Card card in cards)
+            for (int cardIndex = 0; cardIndex < cards.Count; cardIndex++)
             {
+                Card card = cards[cardIndex];
                 int winningNumbers = CountWinningNumbers(card);
                 if (winningNumbers == 0)
                     continue;
 
                 total += Convert.ToInt32(Math.Pow(2, winningNumbers - 1));
+
+                for(int j = 1; j <= winningNumbers; j++)
+                {
+                    int copyIndex = cardIndex + j;
+                    if (copyIndex >= cards.Count)
+                        break;
+
+                    Card copyCard = cards[cardIndex + j];
+                    copyCard.count += card.count;
+                }
             }
             return total;
         }
@@ -77,6 +90,14 @@
                     winningNumbers++;
             }
             return winningNumbers;
+        }
+
+        private static int CountCards()
+        {
+            int total = 0;
+            foreach (Card card in cards)
+                total += card.count;
+            return total;
         }
     }
 }
