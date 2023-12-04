@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace AdventOfCode2023.Day03
+﻿namespace AdventOfCode2023.Day03
 {
     internal class Solution
     {
