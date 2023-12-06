@@ -28,6 +28,14 @@
 
         public static string Solve()
         {
+            Thread mainThread = new Thread(new ThreadStart(SolveThread));
+            mainThread.Start();
+            mainThread.Join();
+            return "";
+        }
+
+        private static void SolveThread()
+        {
             string[] lines = File.ReadLines(@"Day05/input.txt").ToArray();
             ParseSeedsAndMaps(lines);
             long p1 = long.MaxValue;
@@ -42,9 +50,43 @@
                     p1 = value;
             }
 
-            int p2 = 0;
+            long p2 = long.MaxValue;
+            List<Task<long>> tasks = new();
+            for (int i = 0; i < seeds.Length; i += 2)
+            {
+                long startSeed = seeds[i];
+                long endSeed = startSeed + seeds[i + 1];
+                string name = $"Thread ID: {i/2}";
+                Console.WriteLine(name);
+                Task<long> task = Task.Run(() => SolveRange(startSeed, endSeed, name));
+                tasks.Add(task);
+            }
+
+            Task.WhenAll(tasks).Wait();
+            foreach (Task<long> task in tasks)
+            {
+                if (task.Result < p2)
+                    p2 = task.Result;
+            }
+
             string result = $"Part 1: {p1} | Part 2: {p2}";
-            return result;
+            Console.WriteLine(result);
+        }
+
+        private static long SolveRange(long start, long end, string threadName)
+        {
+            long lowestValue = long.MaxValue;
+            for (long seed = start; seed < end; seed++)
+            {
+                long value = seed;
+                foreach (Map map in maps)
+                    value = map.GetDestination(value);
+
+                if (value < lowestValue)
+                    lowestValue = value;
+            }
+            Console.WriteLine($"{threadName} - Result: {lowestValue}");
+            return lowestValue;
         }
 
         private static void ParseSeedsAndMaps(string[] lines)
