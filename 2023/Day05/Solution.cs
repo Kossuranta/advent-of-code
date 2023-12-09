@@ -57,10 +57,10 @@
                 long startSeed = seeds[i];
                 long endSeed = startSeed + seeds[i + 1];
                 string name = $"Thread ID: {i/2}";
-                Console.WriteLine(name);
                 Task<long> task = Task.Run(() => SolveRange(startSeed, endSeed, name));
                 tasks.Add(task);
             }
+            Console.WriteLine($"Started {tasks.Count} threads");
 
             Task.WhenAll(tasks).Wait();
             foreach (Task<long> task in tasks)
