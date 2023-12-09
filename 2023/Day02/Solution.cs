@@ -1,5 +1,15 @@
 ﻿namespace AdventOfCode2023.Day02
 {
+    internal class Solution
+    {
+        public static string Solve()
+        {
+            string p1 = SolutionPart1.Solve();
+            string p2 = SolutionPart2.Solve();
+            return $"Part 1: {p1} | Part 2: {p2}";
+        }
+    }
+
     internal class SolutionPart1
     {
         private static readonly Dictionary<string, int> limits = new()

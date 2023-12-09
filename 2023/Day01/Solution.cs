@@ -1,7 +1,15 @@
-﻿using System.Diagnostics;
-
-namespace AdventOfCode2023.Day01
+﻿namespace AdventOfCode2023.Day01
 {
+    internal class Solution
+    {
+        public static string Solve()
+        {
+            string p1 = SolutionPart1.Solve();
+            string p2 = SolutionPart2.Solve();
+            return $"Part 1: {p1} | Part 2: {p2}";
+        }
+    }
+
     internal class SolutionPart1
     {
         public static string Solve()

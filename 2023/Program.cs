@@ -1,8 +1,29 @@
-﻿//Console.WriteLine($"Day 01 - Part 1: {AdventOfCode2023.Day01.SolutionPart1.Solve()}");
-//Console.WriteLine($"Day 01 - Part 2: {AdventOfCode2023.Day01.SolutionPart2.Solve()}");
-//Console.WriteLine($"Day 02 - Part 1: {AdventOfCode2023.Day02.SolutionPart1.Solve()}");
-//Console.WriteLine($"Day 02 - Part 2: {AdventOfCode2023.Day02.SolutionPart2.Solve()}");
-//Console.WriteLine($"Day 03: {AdventOfCode2023.Day03.Solution.Solve()}");
-//Console.WriteLine($"Day 04: {AdventOfCode2023.Day04.Solution.Solve()}");
-//Console.WriteLine($"Day 05: {AdventOfCode2023.Day05.Solution.Solve()}");
-Console.WriteLine($"Day 06: {AdventOfCode2023.Day06.Solution.Solve()}");
+﻿while (true)
+{
+    Console.Write("Enter day [1-25] to solve: ");
+    string? answer = Console.ReadLine();
+    if (int.TryParse(answer, out int day))
+    {
+        if (day < 1 || day > 25)
+        {
+            Console.WriteLine($"Input needs to be between 1 and 25!");
+            continue;
+        }
+
+        Type? type = Type.GetType($"AdventOfCode2023.Day{day:D2}.Solution");
+        System.Reflection.MethodInfo? method = type?.GetMethod("Solve");
+        if (method == null)
+        {
+            Console.WriteLine($"Day {day} hasn't been solved yet!");
+        }
+        else if (!File.Exists(@$"Day{day:D2}/input.txt"))
+        {
+            Console.WriteLine($"Couldn't find /Day{day:D2}/input.txt!");
+        }
+        else
+        {
+            string result = (string) method.Invoke(null, null);
+            Console.WriteLine(result);
+        }
+    }
+}
