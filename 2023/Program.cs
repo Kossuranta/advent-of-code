@@ -22,7 +22,7 @@
         }
         else
         {
-            string result = (string) method.Invoke(null, null);
+            string result = (string)method.Invoke(null, null);
             Console.WriteLine(result);
         }
     }
